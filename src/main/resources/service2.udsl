@@ -1,0 +1,23 @@
+WebSequenceDiagram
+
+use_case_1    		:   Service("License Renewal use case")
+
+http_inbound_1          :   InboundEndpoint(protocol("http"), port(6060), context("/foo"))
+
+message_flow_1          :   MessageFlow("message_flow_1")
+
+Insurance_Service       :   OutboundConnector(protocol("http"), host("http://localhost:9090/INS"))
+
+
+http_inbound_1 -> message_flow_1 : request
+
+process_message(parallel, configs...)
+process_message(trace, configs...)
+
+message_flow_1 -> Insurance_Service: Validate policy
+Insurance_Service -> message_flow_1: Validation response
+
+process_message(transform, configs...)
+process_message(trace, configs...)
+
+message_flow_1 -> http_inbound_1 : response

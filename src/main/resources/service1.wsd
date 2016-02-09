@@ -1,0 +1,23 @@
+"Sample Service"
+
+Service : Service("LicenseRenewalusecase")
+
+InboundEndpoint : InboundEndpoint(protocol("http"),port(6060),context("/foo"))
+
+messageFlow : MessageFlow("message_flow")
+
+OutboundConnector : OutboundConnector(endpoint("http://localhost:9090/INS"),timeout(60))
+
+
+InboundEndpoint -> messageFlow : request
+
+process_message(PARALLEL,configs)
+process_message(TRACE,configs)
+
+messageFlow -> OutboundConnector : Validate_policy
+OutboundConnector -> messageFlow : Validation_response
+
+process_message(TRANSFORM,configs)
+process_message(TRACE,configs)
+
+messageFlow -> InboundEndpoint : response
